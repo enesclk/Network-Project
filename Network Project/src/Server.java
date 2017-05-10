@@ -27,13 +27,14 @@ public class Server {
 
     private static DatagramSocket socketThis;
     private static Thread listen;
-    public static ArrayList<Client> connectedClients = new ArrayList();
+    public static ArrayList<Client> connectedClients = new ArrayList<>();
     public static ArrayList<Integer> connectedClientsID;
     private static EventListenerList messageReceivedListenerList = new EventListenerList();
+    
 
-    public static void create(int port) throws SocketException {
-        Server.socketThis = new DatagramSocket(port);
-        Server.connectedClients = new ArrayList();
+    public static void create(String Ip, String kullaniciAdi) throws SocketException {
+        Server.socketThis = new DatagramSocket(2000);
+        Server.connectedClients = new ArrayList<>();
         Server.listen = new Thread() {
             public void run() {
                 System.out.println("Server ready");
@@ -44,12 +45,21 @@ public class Server {
                         Server.socketThis.receive(rPack);
                         String text = new String(rPack.getData());
                         Server.fireMessageReceivedEvent(text);
-                        Client newclient = new Client(rPack.getAddress(), rPack.getPort());
-                        Server.connectedClients.add(newclient);
+                        Client newclient = new Client(InetAddress.getByName(Ip), kullaniciAdi);
+                        if (Server.connectedClients.size() == 0){
+                            Server.connectedClients.add(newclient);
+                        }
+                        else if(Server.connectedClients.size() == 1){
+                            Server.connectedClients.add(newclient);
+                        }
+                        else
+                            System.out.println("Server şu anda dolu!");
+                            
+
 
                         rData = null;
                         rPack = null;
-                        Client c = new Client(InetAddress.getByName("192.168.1.38"), 2000);
+                      
 
                         //sendMessage(UdpClient.message);
                     } catch (IOException ex) {
@@ -67,13 +77,13 @@ public class Server {
 
     public static void stop() {
         Server.listen.interrupt();
-        Server.connectedClients.clear();
+        Server.connectedClients = null;
         Server.socketThis.close();
     }
 
     public static void addClient(Client newclient) throws UnknownHostException {
         boolean isexist = false;
-        Client c = new Client(InetAddress.getByName("172.16.16.200"), 3000);
+        Client c = new Client(newclient.Ip, newclient.kullaniciAdi);
         connectedClients.add(newclient);
         for (Client connectedClient : connectedClients) {
 
