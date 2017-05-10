@@ -1,4 +1,5 @@
 
+
 import java.net.InetAddress;
 
 /*
@@ -12,16 +13,16 @@ import java.net.InetAddress;
  */
 public class Client {
 
-    public static int uniqueId = 0;
     public InetAddress Ip;
-    public int Port;
+    public int Port = 2000;
     public int id;
+    public String kullaniciAdi;
 
-    Client(InetAddress Ip, int Port) {
+    Client(InetAddress Ip, String kullaniciAdi) {
         this.Ip = Ip;
-        this.Port = Port;
-        this.id = Client.uniqueId;
-        Client.uniqueId++;
+        this.kullaniciAdi = kullaniciAdi;
+
     }
 
 }
+
